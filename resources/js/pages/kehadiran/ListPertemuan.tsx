@@ -8,17 +8,28 @@ interface Pertemuan {
   topik: string;
 }
 
-interface Props {
-  pertemuans: Pertemuan[];
-  matkulOptions: string[]; // daftar nama matkul dari backend
+interface KelasOption {
+  nama_kelas: string;
+  matkul: string;
 }
 
-export default function ListPertemuan({ pertemuans, matkulOptions }: Props) {
-  const [selectedMatkul, setSelectedMatkul] = useState<string>('semua');
+interface Props {
+  pertemuans: Pertemuan[];
+  matkulOptions: string[];
+  kelasOptions: KelasOption[];
+}
 
-  const filteredPertemuans = selectedMatkul === 'semua'
-    ? pertemuans
-    : pertemuans.filter(p => p.matkul === selectedMatkul);
+export default function ListPertemuan({ pertemuans, matkulOptions, kelasOptions }: Props) {
+  const [selectedMatkul, setSelectedMatkul] = useState<string>('semua');
+  const [selectedKelas, setSelectedKelas] = useState<string>('semua');
+
+  const filteredPertemuans = pertemuans.filter((p) => {
+    const matkulMatch = selectedMatkul === 'semua' || p.matkul === selectedMatkul;
+    const kelasMatch =
+      selectedKelas === 'semua' ||
+      kelasOptions.some((k) => k.matkul === p.matkul && k.nama_kelas === selectedKelas);
+    return matkulMatch && kelasMatch;
+  });
 
   return (
     <AppLayout>
@@ -35,7 +46,7 @@ export default function ListPertemuan({ pertemuans, matkulOptions }: Props) {
             </p>
           </div>
 
-          {/* Filter */}
+          {/* Filter Matkul */}
           <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
             <label className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
               Filter Matkul:
@@ -43,7 +54,10 @@ export default function ListPertemuan({ pertemuans, matkulOptions }: Props) {
             <select
               className="px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md bg-white dark:bg-neutral-900 text-sm text-neutral-700 dark:text-neutral-200"
               value={selectedMatkul}
-              onChange={(e) => setSelectedMatkul(e.target.value)}
+              onChange={(e) => {
+                setSelectedMatkul(e.target.value);
+                setSelectedKelas('semua'); // reset kelas saat matkul berubah
+              }}
             >
               <option value="semua">Semua</option>
               {matkulOptions.map((matkul, i) => (
@@ -54,7 +68,28 @@ export default function ListPertemuan({ pertemuans, matkulOptions }: Props) {
             </select>
           </div>
 
-          {/* Tabel */}
+          {/* Filter Kelas */}
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+            <label className="text-sm font-medium text-neutral-700 dark:text-neutral-200">
+              Filter Kelas:
+            </label>
+            <select
+              className="px-3 py-2 border border-neutral-300 dark:border-neutral-600 rounded-md bg-white dark:bg-neutral-900 text-sm text-neutral-700 dark:text-neutral-200"
+              value={selectedKelas}
+              onChange={(e) => setSelectedKelas(e.target.value)}
+            >
+              <option value="semua">Semua</option>
+              {kelasOptions
+                .filter((k) => selectedMatkul === 'semua' || k.matkul === selectedMatkul)
+                .map((kelas, idx) => (
+                  <option key={idx} value={kelas.nama_kelas}>
+                    {kelas.nama_kelas}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          {/* Tabel Pertemuan */}
           <div className="overflow-x-auto rounded-md">
             <table className="min-w-full text-sm divide-y divide-neutral-200 dark:divide-neutral-700 border border-neutral-300 dark:border-neutral-600">
               <thead className="bg-neutral-100 dark:bg-neutral-700 text-neutral-800 dark:text-neutral-200">
@@ -90,7 +125,7 @@ export default function ListPertemuan({ pertemuans, matkulOptions }: Props) {
                 ) : (
                   <tr>
                     <td colSpan={3} className="px-4 py-6 text-center text-neutral-500 dark:text-neutral-400">
-                      Tidak ada pertemuan pada matkul ini.
+                      Tidak ada pertemuan yang cocok.
                     </td>
                   </tr>
                 )}

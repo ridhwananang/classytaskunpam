@@ -41,8 +41,11 @@ export default function SetupQR() {
             *Scan QRCode cukup dilakukan 1x
           </p>
           <p className="text-center text-sm text-gray-700 dark:text-gray-300">
-           *Masukkan Kode OTP disetiap pertemuan
+           *Masukkan Kode OTP disetiap pertemuan dari aplikasi Authenticator
            </p>
+           {/* <p className="text-center text-sm text-gray-700 dark:text-gray-300">
+           *Masukkan Kode OTP 
+           </p> */}
           {/* Optional Manual Code */}
           {/* <p className="text-xs text-center text-gray-500 dark:text-gray-400 mt-2">
             Atau masukkan kode manual: <code className="font-mono">{secret}</code>

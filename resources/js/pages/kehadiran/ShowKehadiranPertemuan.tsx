@@ -11,18 +11,19 @@ interface Mahasiswa {
 interface Props {
   matkul: string;
   pertemuan: string;
+  pertemuanId: number;
   dataKehadiran: Mahasiswa[];
 }
 
 export default function ShowKehadiranPertemuan({
   matkul,
   pertemuan,
+  pertemuanId,
   dataKehadiran,
 }: Props) {
   return (
     <AppLayout>
       <div className="w-full mx-auto px-4 sm:px-6 py-8 space-y-8">
-
         {/* Informasi Mata Kuliah dan Pertemuan */}
         <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-md p-6 space-y-6">
           <div className="space-y-1">
@@ -41,6 +42,7 @@ export default function ShowKehadiranPertemuan({
                 <tr>
                   <th className="px-6 py-3">Nama</th>
                   <th className="px-6 py-3">Kehadiran</th>
+                  <th className="px-6 py-3">Aksi</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-neutral-200 dark:divide-neutral-700">
@@ -58,18 +60,32 @@ export default function ShowKehadiranPertemuan({
                           className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
                             mhs.status === 'hadir'
                               ? 'bg-green-100 text-green-800 dark:bg-green-700 dark:text-white'
-                              : 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-white'
+                              : mhs.status === 'tidak'
+                              ? 'bg-red-100 text-red-800 dark:bg-red-700 dark:text-white'
+                              : 'bg-gray-100 text-gray-800 dark:bg-gray-700 dark:text-white'
                           }`}
                         >
-                          {mhs.status === 'hadir' ? 'Hadir' : 'Tidak Hadir'}
+                          {mhs.status === 'hadir'
+                            ? 'Hadir'
+                            : mhs.status === 'tidak_hadir'
+                            ? 'Tidak Hadir'
+                            : 'Belum Absen'}
                         </span>
+                      </td>
+                      <td className="px-6 py-3">
+                        <Link
+                          href={`/absensi/update/${mhs.id}?pertemuan_id=${pertemuanId}`}
+                          className="text-blue-500 hover:underline text-xs"
+                        >
+                          {mhs.status === 'belum' ? 'Tandai Kehadiran' : 'Edit'}
+                        </Link>
                       </td>
                     </tr>
                   ))
                 ) : (
                   <tr>
                     <td
-                      colSpan={2}
+                      colSpan={3}
                       className="px-6 py-6 text-center text-neutral-500 dark:text-neutral-400"
                     >
                       Tidak ada data kehadiran untuk pertemuan ini.

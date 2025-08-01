@@ -82,9 +82,9 @@ export default function Dashboard() {
       <div className="flex h-full flex-1 flex-col gap-4 rounded-xl p-3">
 
         {/* Kartu Statistik */}
-        {/* <div className="grid grid-cols-1 md:grid-cols-4 gap-6"> */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Mahasiswa */}
-          {/* <div className="group bg-[#006359] text-white rounded-tr-3xl rounded-bl-lg p-6 shadow-lg hover:scale-105 transition-all duration-300">
+          <div className="group bg-[#006359] text-white rounded-tr-3xl rounded-bl-lg p-6 shadow-lg hover:scale-105 transition-all duration-300">
             <div className="flex items-center gap-4">
               <div className="bg-[#F9F200] p-3 rounded-full text-3xl text-[#006359] shadow-md">🎓</div>
               <div>
@@ -92,7 +92,7 @@ export default function Dashboard() {
                 <p className="text-3xl font-bold mt-1">{mahasiswa.length}</p>
               </div>
             </div>
-          </div> */}
+          </div>
 
           {/* Tugas */}
           {/* <div className="group bg-gradient-to-br from-[#F9F200] to-yellow-300 text-[#006359] rounded-bl-3xl p-6 shadow-lg hover:scale-105 transition-all duration-300">
@@ -117,7 +117,7 @@ export default function Dashboard() {
           </div> */}
 
           {/* Jadwal */}
-          {/* <div className="group bg-gradient-to-tr from-[#006359] via-emerald-600 to-[#006359] text-white rounded-r-[3rem] p-6 shadow-lg hover:scale-105 transition-all duration-300">
+          <div className="group bg-gradient-to-tr from-[#006359] via-emerald-600 to-[#006359] text-white rounded-r-[3rem] p-6 shadow-lg hover:scale-105 transition-all duration-300">
             <div className="flex items-center gap-4">
               <div className="bg-white text-[#006359] p-3 rounded-t-full text-3xl shadow-md">📆</div>
               <div>
@@ -125,8 +125,8 @@ export default function Dashboard() {
                 <p className="text-3xl font-bold mt-1">{jadwal.length}</p>
               </div>
             </div>
-          </div> */}
-        {/* </div> */}
+          </div> 
+        </div>
 
         {/* Tabel Mahasiswa */}
         <div className="grid grid-cols-1 md:grid-cols-10 gap-6 p-1 bg-white dark:bg-zinc-900 min-h-screen">
@@ -195,7 +195,7 @@ export default function Dashboard() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-2">
+                    {/* <div className="flex items-center gap-2">
                       {mhs.is_online ? (
                         <>
                           <span className="w-3 h-3 rounded-full bg-green-400 animate-pulse" />
@@ -211,7 +211,7 @@ export default function Dashboard() {
                           </span>
                         </>
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 ))
               ) : (

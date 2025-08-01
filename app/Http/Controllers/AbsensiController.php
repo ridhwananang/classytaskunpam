@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use OTPHP\TOTP;
 use Inertia\Inertia;
+use App\Models\Jadwal;
 use App\Models\Absensi;
 use App\Models\Pertemuan;
 use Illuminate\Http\Request;
@@ -112,6 +113,7 @@ class AbsensiController extends Controller
         return Inertia::render('kehadiran/ShowKehadiranPertemuan', [
             'matkul' => $pertemuan->jadwal->nama_matkul,
             'pertemuan' => $pertemuan->topik ?? 'Pertemuan ' . $pertemuan->pertemuan_ke,
+            'pertemuanId' => $pertemuan->id, // ✅ tambahkan ini!
             'dataKehadiran' => $dataKehadiran,
         ]);
     }
@@ -120,7 +122,7 @@ class AbsensiController extends Controller
         $user = Auth::user();
 
         // Ambil hanya pertemuan yang diampu dosen tersebut
-        $pertemuans = Pertemuan::with('jadwal')
+        $pertemuans = Pertemuan::with('jadwal.kelas')
             ->whereHas('jadwal', function ($q) use ($user) {
                 if ($user->role !== 'admin') {
                     $q->where('dosen_id', $user->id);
@@ -132,13 +134,62 @@ class AbsensiController extends Controller
                 'id' => $p->id,
                 'matkul' => $p->jadwal->nama_matkul,
                 'topik' => $p->topik ?? 'Pertemuan ' . $p->pertemuan_ke,
+                'kelas' => $p->jadwal->kelas->nama_kelas ?? '-',
             ]);
 
         $matkulOptions = $pertemuans->pluck('matkul')->unique()->values();
+        $kelasOptions = Jadwal::with('kelas')
+            ->where('dosen_id', $user->id)
+            ->get()
+            ->map(function ($j) {
+                return [
+                    'nama_kelas' => $j->kelas->nama_kelas ?? '-',
+                    'matkul' => $j->nama_matkul,
+                ];
+            });
 
         return Inertia::render('kehadiran/ListPertemuan', [
             'pertemuans' => $pertemuans,
             'matkulOptions' => $matkulOptions,
+            'kelasOptions' => $kelasOptions,
         ]);
+    }
+    public function updateForm($mahasiswaId, Request $request)
+    {
+        $pertemuanId = $request->query('pertemuan_id');
+
+        return Inertia::render('absensi/Edit', [
+            'user_id' => $mahasiswaId,
+            'pertemuan_id' => $pertemuanId,
+        ]);
+    }
+
+    public function update($mahasiswaId, Request $request)
+    {
+        $request->validate([
+            'pertemuan_id' => 'required|exists:pertemuans,id',
+            'status' => 'required|in:hadir,tidak_hadir',
+        ]);
+
+        // Cek apakah sudah ada data absensi sebelumnya
+        // cari pertemuan terlebih dahulu
+        $pertemuan = Pertemuan::findOrFail($request->pertemuan_id);
+
+        // pastikan pertemuan punya jadwal
+        $jadwalId = $pertemuan->jadwal_id;
+
+        $absensi = Absensi::firstOrNew([
+            'pertemuan_id' => $request->pertemuan_id,
+            'user_id' => $mahasiswaId,
+        ]);
+
+        $absensi->status = $request->status;
+        $absensi->jadwal_id = $jadwalId; // ← penting!
+        $absensi->save();
+
+
+        return redirect()->route('kehadiran-pertemuan.show', $request->pertemuan_id)
+
+            ->with('success', 'Absensi berhasil diperbarui.');
     }
 }

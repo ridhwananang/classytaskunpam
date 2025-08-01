@@ -86,6 +86,14 @@ export default function Nilai({ rekap }: Props) {
       Belum ada nilai yang tersedia.
     </div>
   )}
+  <a
+  href="/nilai/export"
+  target="_blank"
+  className="inline-block px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+>
+  Export PDF
+</a>
+
 </div>
 
 

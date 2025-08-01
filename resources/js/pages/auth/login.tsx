@@ -158,7 +158,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         {/* Left Section */}
         <div className="flex flex-col justify-center px-8 md:px-24 lg:px-32 relative">
           {/* Toggle Dark Mode */}
-          <div className="absolute top-4 left-4">
+          {/* <div className="absolute top-4 right-4">
             <button
               onClick={() => setDarkMode(!darkMode)}
               className="rounded-full bg-zinc-100 dark:bg-zinc-800 p-2 shadow transition"
@@ -166,7 +166,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             >
               {darkMode ? <Sun className="h-5 w-5 text-yellow-400" /> : <Moon className="h-5 w-5 text-zinc-700" />}
             </button>
-          </div>
+          </div> */}
 
           <div className="w-full max-w-md mx-auto">
             {/* <img src="img/classyy.png" alt="Logo" className="h-14 mb-6" /> */}

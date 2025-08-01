@@ -9,6 +9,7 @@ use App\Models\Absensi;
 use App\Models\Pertemuan;
 use App\Models\RekapNilai;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
 class RekapNilaiController extends Controller
@@ -156,5 +157,20 @@ class RekapNilaiController extends Controller
         return Inertia::render('rekapnilai/Nilai', [ // ← ganti ke Nilai.tsx
             'rekap' => $rekap,
         ]);
+    }
+    public function exportPdf()
+    {
+        $user = Auth::user();
+
+        $rekap = RekapNilai::with('jadwal.kelas')
+            ->where('user_id', $user->id)
+            ->get();
+
+        $pdf = Pdf::loadView('pdf.nilai', [
+            'rekap' => $rekap,
+            'nama' => $user->name
+        ]);
+
+        return $pdf->download('nilai_' . strtolower(str_replace(' ', '_', $user->name)) . '.pdf');
     }
 }

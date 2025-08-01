@@ -50,4 +50,32 @@ class PertemuanController extends Controller
 
         return redirect()->route('pertemuan.create')->with('success', 'Pertemuan berhasil dibuat!');
     }
+
+
+    public function show($id)
+    {
+        $pertemuan = Pertemuan::with(['jadwal.kelas.mahasiswas', 'absensi'])->findOrFail($id);
+
+        $semuaMahasiswa = $pertemuan->jadwal->kelas->mahasiswas;
+
+        $absensiMahasiswa = $pertemuan->absensi;
+
+        // Gabungkan semua mahasiswa dengan status absensi (hadir/tidak/belum)
+        $dataKehadiran = $semuaMahasiswa->map(function ($mhs) use ($absensiMahasiswa) {
+            $absensi = $absensiMahasiswa->firstWhere('mahasiswa_id', $mhs->id);
+
+            return [
+                'id' => $mhs->id,
+                'name' => $mhs->name,
+                'status' => $absensi ? $absensi->status : 'belum', // "belum" jika belum absensi
+            ];
+        });
+
+        return Inertia::render('ShowKehadiranPertemuan', [
+            'matkul' => $pertemuan->jadwal->nama_matkul,
+            'pertemuan' => $pertemuan->topik,
+            'pertemuanId' => $pertemuan->id, // ← Tambahkan ini!
+            'dataKehadiran' => $dataKehadiran,
+        ]);
+    }
 }

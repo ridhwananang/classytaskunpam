@@ -138,7 +138,7 @@ const [copiedId, setCopiedId] = useState<number | null>(null);
           {jadwal.whatsapp}
         </a>
       </div>
-      <button
+      {/* <button
         onClick={() => {
           navigator.clipboard.writeText(jadwal.whatsapp)
             .then(() => {
@@ -154,7 +154,7 @@ const [copiedId, setCopiedId] = useState<number | null>(null);
         }`}
       >
         {copiedId === jadwal.id ? 'Tersalin ✅' : 'Salin'}
-      </button>
+      </button> */}
     </div>
   ) : (
     <span className="text-gray-400 italic">Tidak ada</span>

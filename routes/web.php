@@ -255,6 +255,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/absensi/input-kode', [AbsensiController::class, 'inputKode'])->name('absensi.input-kode');
     Route::post('/absensi/hadir', [AbsensiController::class, 'absensiHadir'])->name('absensi.hadir');
     Route::get('/absensi/riwayat', [AbsensiController::class, 'riwayat'])->name('absensi.riwayat');
+    Route::get('/absensi/update/{mahasiswa}', [AbsensiController::class, 'updateForm'])->name('absensi.updateForm');
+    Route::post('/absensi/update/{mahasiswa}', [AbsensiController::class, 'update'])->name('absensi.update');
 
     Route::get('/admin/pertemuan/create', [PertemuanController::class, 'create'])->name('pertemuan.create');
     Route::post('/admin/pertemuan', [PertemuanController::class, 'store'])->name('pertemuan.store');
@@ -269,6 +271,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::get('/nilai', [RekapNilaiController::class, 'nilai'])->middleware(['auth']);
+Route::get('/nilai/export', [RekapNilaiController::class, 'exportPdf'])->middleware('auth');
 
 
 require __DIR__ . '/settings.php';
